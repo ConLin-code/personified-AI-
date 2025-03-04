@@ -1,0 +1,18 @@
+{'loss': 1.5872, 'grad_norm': 42.586280822753906, 'learning_rate': 1.851851851851852e-05, 'epoch': 0.22}
+{'loss': 1.2886, 'grad_norm': 6.3754777908325195, 'learning_rate': 1.7037037037037038e-05, 'epoch': 0.44}
+{'loss': 1.2677, 'grad_norm': 5.630112171173096, 'learning_rate': 1.555555555555556e-05, 'epoch': 0.66}
+{'loss': 1.3199, 'grad_norm': 6.04646635055542, 'learning_rate': 1.4074074074074075e-05, 'epoch': 0.88}
+{'loss': 1.0483, 'grad_norm': 5.26814603805542, 'learning_rate': 1.2592592592592593e-05, 'epoch': 1.09}
+{'eval_loss': 1.1484313011169434, 'eval_runtime': 56.4866, 'eval_samples_per_second': 0.726, 'eval_steps_per_second': 0.372, 'epoch': 1.09}
+{'loss': 0.7079, 'grad_norm': 4.365194320678711, 'learning_rate': 1.1111111111111113e-05, 'epoch': 1.31}
+{'loss': 0.6318, 'grad_norm': 4.4706315994262695, 'learning_rate': 9.62962962962963e-06, 'epoch': 1.53}
+{'loss': 0.5835, 'grad_norm': 5.741226673126221, 'learning_rate': 8.148148148148148e-06, 'epoch': 1.75}
+{'loss': 0.5908, 'grad_norm': 6.610239028930664, 'learning_rate': 6.666666666666667e-06, 'epoch': 1.97}
+{'loss': 0.4189, 'grad_norm': 6.500315189361572, 'learning_rate': 5.185185185185185e-06, 'epoch': 2.18}
+{'eval_loss': 1.327326774597168, 'eval_runtime': 125.079, 'eval_samples_per_second': 0.328, 'eval_steps_per_second': 0.168, 'epoch': 2.18}
+{'loss': 0.2866, 'grad_norm': 4.143458366394043, 'learning_rate': 3.7037037037037037e-06, 'epoch': 2.4}
+{'loss': 0.2529, 'grad_norm': 3.448354721069336, 'learning_rate': 2.222222222222222e-06, 'epoch': 2.62}                                                                                                                      
+#The loss should tend towards 0 - decreasing every time
+#The grad_norm (gradient norm) indicate the magnitude of the gradients during training - depend on the model architecture, optimization algorithm, and the scale of the data (this example it is in a reasonable range)
+#The eval_loss values are higher than the training loss, which is normal since the model is evaluated on "unseen data".
+#The eval_runtime and eval_samples_per_second metrics show how long evaluation takes and how many samples are processed per second.
