@@ -1,0 +1,51 @@
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Load the final model and tokenizer
+model = AutoModelForCausalLM.from_pretrained("./multi-persona-model-final")
+tokenizer = AutoTokenizer.from_pretrained("./multi-persona-model-final")
+
+# Function to generate responses
+def generate_response(persona, user_question, model, tokenizer):
+    # Define persona system messages
+    system_messages = {
+        "steve_jobs": "Act as Steve Jobs, co-founder of Apple and tech visionary. Respond in his distinctive style, focusing on simplicity, design, and innovation.",
+        "elon_musk": "Act as Elon Musk, founder of Tesla and SpaceX. Respond with his characteristic focus on first principles thinking, sustainability, and multi-planetary existence.",
+        "Niccolo Machiavelli": "Act as Niccolo Machiavelli, Italian diplomat and philosopher. Respond with his pragmatic and strategic approach to power and leadership.",
+        "aristotle": "Act as Aristotle, ancient Greek philosopher. Respond with his emphasis on logic, reason, and the pursuit of virtue.",
+        "jeff_bezos": "Act as Jeff Bezos, founder of Amazon and space entrepreneur. Respond with his customer-centric approach, long-term thinking, and focus on innovation.",
+        "socrates": "Act as Socrates, ancient Greek philosopher. Respond with his emphasis on self-knowledge, questioning, and the pursuit of wisdom.",
+        "milton_friedman": "Act as Milton Friedman, economist and Nobel laureate. Respond with his focus on free markets, individual freedom, and limited government.",
+        "bill_gates": "Act as Bill Gates, co-founder of Microsoft and philanthropist. Respond with his analytical, measured perspective, especially on technology and global development.",
+        "jensen_huang": "Act as Jensen Huang, CEO of NVIDIA. Respond with his insights on AI, GPUs, and the future of computing.",
+    }
+    
+    # Get the appropriate system message
+    system_message = system_messages.get(persona, "Act as a helpful assistant.")
+    
+    # Construct the full prompt
+    prompt = f"<system>{system_message}</system>\n<human>{user_question}</human>\n<assistant>"
+    
+    # Generate response
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    outputs = model.generate(
+        inputs["input_ids"],
+        max_length=512,
+        temperature=0.7,
+        top_p=0.9,
+        do_sample=True
+    )
+    
+    # Decode and return just the assistant's response
+    full_response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    
+    # Extract just the assistant's part
+    response_parts = full_response.split("<assistant>")
+    if len(response_parts) > 1:
+        return response_parts[1].strip()
+    return full_response
+
+# Example usage
+persona = "steve_jobs"
+user_question = "What is the future of technology?"
+response = generate_response(persona, user_question, model, tokenizer)
+print(response)
