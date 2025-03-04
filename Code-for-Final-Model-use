@@ -1,3 +1,4 @@
+#you can now delete all the other code you just had and replace it with this, *IF* you are done and want to use the final model now
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Load the final model and tokenizer
