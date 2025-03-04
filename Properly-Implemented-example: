@@ -1,3 +1,4 @@
+#You should get an output that looks roughly like this: 
 {'loss': 1.5872, 'grad_norm': 42.586280822753906, 'learning_rate': 1.851851851851852e-05, 'epoch': 0.22}
 {'loss': 1.2886, 'grad_norm': 6.3754777908325195, 'learning_rate': 1.7037037037037038e-05, 'epoch': 0.44}
 {'loss': 1.2677, 'grad_norm': 5.630112171173096, 'learning_rate': 1.555555555555556e-05, 'epoch': 0.66}
