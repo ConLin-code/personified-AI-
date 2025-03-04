@@ -1674,10 +1674,6 @@ split_dataset = dataset.train_test_split(test_size=0.1)
 # Option 1: Using TinyLlama (a smaller, open access model); it was taking a long time to run anything larger
 model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
-# Alternative options if the above doesn't work:
-# model_name = "facebook/opt-1.3b"  # Option 2
-# model_name = "EleutherAI/pythia-1.4b"  # Option 3
-
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float32)
 
@@ -1710,7 +1706,7 @@ tokenized_val = split_dataset["test"].map(
 # Data collator
 data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
-# Adjust training arguments for a smaller model
+# Adjust training arguments for a smaller/larger model
 training_args = TrainingArguments(
     output_dir="./multi-persona-model",
     per_device_train_batch_size=2,
