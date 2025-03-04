@@ -1,0 +1,62 @@
+#There are 3 checkpoint evaluation steps you can evaluate- (Checkpoint 100, Checkpoint 135 and the Final Model)- could be good to see if your model is overfit or not and if it is, where you can fix it
+from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
+from datasets import Dataset, load_metric
+
+# Step 1: Define the evaluation function
+def evaluate_model(model_path, tokenizer_path, eval_dataset):
+    # Load the model and tokenizer
+    model = AutoModelForCausalLM.from_pretrained(model_path)
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
+    
+    # Tokenize the evaluation dataset
+    tokenized_eval = eval_dataset.map(
+        lambda examples: tokenizer(examples["text"], truncation=True, padding="max_length", max_length=512),
+        batched=True,
+        remove_columns=["text"]
+    )
+    
+    # Set up Trainer for evaluation
+    trainer = Trainer(
+        model=model,
+        args=TrainingArguments(output_dir="./eval_results", per_device_eval_batch_size=2),
+        eval_dataset=tokenized_eval,
+    )
+    
+    # Evaluate the model
+    results = trainer.evaluate()
+    return results
+
+# Step 2: Load your evaluation dataset
+# Replace this with your actual evaluation dataset
+# Example: Use the validation set from your original code
+fine_tuning_data = [
+    {"instruction": "What are you and your employees at apply doing that is so influential?", 
+     "answer": "There was an article in Scientific American in the early 70s which compared the efficiency of locomotion for various species of things on the planet...",
+     "persona": "steve_jobs"},
+    # Add more examples here, I shortened it to save space, but you can find the rest that I put in the Fine-tuning-data file
+]
+
+# Format data WITH the persona system message
+formatted_data = []
+for item in fine_tuning_data:
+    text = f"<system>Act as {item['persona']}.</system>\n<human>{item['instruction']}</human>\n<assistant>{item['answer']}</assistant>"
+    formatted_data.append({"text": text})
+
+# Create dataset and split into train/validation
+dataset = Dataset.from_dict({"text": [x["text"] for x in formatted_data]})
+split_dataset = dataset.train_test_split(test_size=0.1)  # 10% for evaluation
+
+# Use the validation set as the evaluation dataset
+eval_dataset = split_dataset["test"]
+
+# Step 3: Evaluate all three models
+final_model_results = evaluate_model("./multi-persona-model-final", "./multi-persona-model-final", eval_dataset)
+checkpoint_100_results = evaluate_model("./multi-persona-model/checkpoint-100", "./multi-persona-model/checkpoint-100", eval_dataset)
+checkpoint_135_results = evaluate_model("./multi-persona-model/checkpoint-135", "./multi-persona-model/checkpoint-135", eval_dataset)
+
+# Print the evaluation results
+print("Final Model Results:", final_model_results)
+print("Checkpoint-100 Results:", checkpoint_100_results)
+print("Checkpoint-135 Results:", checkpoint_135_results)
+
+
