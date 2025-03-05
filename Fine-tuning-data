@@ -1706,28 +1706,36 @@ tokenized_val = split_dataset["test"].map(
 # Data collator
 data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
+
+
+
 # Adjust training arguments for a smaller/larger model
+# Good thing to do for larger models is: Reduce per_device_train_batch_size and increase gradient_accumulation_steps to fit the model into memory.
+# Good thing to do for smaller models is: Increase per_device_train_batch_size to speed up training and reduce gradient_accumulation_steps since memory usage will be lower.
+# If you want faster training: Increase per_device_train_batch_size and reduce gradient_accumulation_steps while setting fp16=True or bf16=True if that works for your code.
+# For more generalization: Increase weight_decay to add more regularization or use a smaller learning_rate.
+#This below is what I used for the traning arguments
 training_args = TrainingArguments(
-    output_dir="./multi-persona-model",
-    per_device_train_batch_size=2,
-    gradient_accumulation_steps=4,
-    per_device_eval_batch_size=2,
-    eval_accumulation_steps=4,
-    num_train_epochs=3,
-    eval_strategy="steps",
-    eval_steps=50,
-    save_strategy="steps",
-    save_steps=100,
-    save_total_limit=2,
-    logging_dir="./logs",
-    logging_steps=10,
-    learning_rate=2e-5,
-    weight_decay=0.01,
+    output_dir="./multi-persona-model", #Specifies the directory where the trained model, checkpoints, and logs will be saved
+    per_device_train_batch_size=2, #Sets the batch size for training on each device (e.g., GPU or CPU). Ex:  If you have 1 GPU, the training batch size will be 2. If you have 2 GPUs, the total batch size will be 4 (2 per GPU).
+    gradient_accumulation_steps=4, #Accumulates gradients over multiple steps before performing a backward pass. This is useful when you want to simulate a larger batch size without increasing memory usage
+    per_device_eval_batch_size=2, # Sets the batch size for evaluation on each device.
+    eval_accumulation_steps=4, # Accumulates evaluation results over multiple steps before logging or saving. This is useful for reducing memory usage during evaluation.
+    num_train_epochs=3, #Specifies the number of times the model will see the entire training dataset. This model trains for 3 full passes over the training data
+    eval_strategy="steps", # Determines when evaluation is performed during training. Setting it to "steps" means evaluation will happen every eval_steps steps.
+    eval_steps=50, #Specifies how often (in terms of steps) to perform evaluation during training (Evaluation happens every 50 steps)
+    save_strategy="steps", #Determines when model checkpoints are saved. Setting it to "steps" means checkpoints will be saved every save_steps steps.
+    save_steps=100, #Specifies how often (in terms of steps) to save model checkpoints (Every 100 steps)
+    save_total_limit=2, #Limits the total number of checkpoints saved. Older checkpoints are deleted to make room for new ones (only most recent 2 are saved)
+    logging_dir="./logs", #Specifies the directory where training logs will be saved.
+    logging_steps=10, #Specifies how often (in terms of steps) to log training metrics (e.g., loss, learning rate).
+    learning_rate=2e-5, #Sets the initial learning rate for the optimizer. (0.00002)
+    weight_decay=0.01, #Adds L2 regularization to the optimizer to prevent overfitting.
     fp16=False, #set fp16 to false instead of true here, because it wasn't letting me use true (if it allows you to put True with no errors, it is faster)
-    bf16=False,
-    load_best_model_at_end=True,
+    bf16=False, #Enables or disables mixed precision training using bfloat16. This is useful for newer hardware (e.g., TPUs or NVIDIA A100 GPUs).
+    load_best_model_at_end=True, #Loads the best model (based on evaluation loss) at the end of training.
     save_total_limit=2,
-    report_to="tensorboard",
+    report_to="tensorboard", #Specifies where to report training metrics. Setting it to "tensorboard" logs metrics to TensorBoard.
 )
 
 
