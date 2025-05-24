@@ -14,6 +14,6 @@
 {'loss': 0.2866, 'grad_norm': 4.143458366394043, 'learning_rate': 3.7037037037037037e-06, 'epoch': 2.4}
 {'loss': 0.2529, 'grad_norm': 3.448354721069336, 'learning_rate': 2.222222222222222e-06, 'epoch': 2.62}                                                                                                                      
 #The loss should tend towards 0 - decreasing every time
-#The grad_norm (gradient norm) indicate the magnitude of the gradients during training - depend on the model architecture, optimization algorithm, and the scale of the data (this example it is in a reasonable range)
+#The grad_norm (gradient norm) indicates the magnitude of the gradients during training - depend on the model architecture, optimization algorithm, and the scale of the data (this example it is in a reasonable range)
 #The eval_loss values are higher than the training loss, which is normal since the model is evaluated on "unseen data".
 #The eval_runtime and eval_samples_per_second metrics show how long evaluation takes and how many samples are processed per second.
