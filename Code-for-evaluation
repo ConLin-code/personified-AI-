@@ -5,8 +5,8 @@ from datasets import Dataset, load_metric
 # Step 1: Define the evaluation function
 def evaluate_model(model_path, tokenizer_path, eval_dataset):
     # Load the model and tokenizer
-    model = AutoModelForCausalLM.from_pretrained(model_path)
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
+    model = #choose a model that you can run
+    tokenizer = #choose a tokenizer
     
     # Tokenize the evaluation dataset
     tokenized_eval = eval_dataset.map(
@@ -26,7 +26,7 @@ def evaluate_model(model_path, tokenizer_path, eval_dataset):
     results = trainer.evaluate()
     return results
 
-# Step 2: Load your evaluation dataset
+# Step 2: Load evaluation dataset
 # Replace this with your actual evaluation dataset
 # Example: Use the validation set from your original code
 fine_tuning_data = [
